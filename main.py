@@ -7,10 +7,6 @@ app = FastAPI()
 class SentimentRequest(BaseModel):
     sentences: List[str]
 
-@app.get("/")
-def root():
-    return {"message": "API is running"}
-
 def analyze_sentiment(sentence: str) -> str:
     sentence = sentence.lower()
 
