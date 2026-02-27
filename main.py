@@ -20,6 +20,10 @@ def analyze_sentiment(sentence: str) -> str:
     else:
         return "neutral"
 
+@app.get("/")
+def root():
+    return {"message": "API is running"}
+
 @app.post("/sentiment")
 def batch_sentiment(request: SentimentRequest):
     results = []
