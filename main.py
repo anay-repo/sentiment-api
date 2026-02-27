@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# ✅ Enable CORS
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,12 +20,24 @@ class SentimentRequest(BaseModel):
 def analyze_sentiment(sentence: str) -> str:
     sentence = sentence.lower()
 
-    positive_words = ["love", "great", "excellent", "good", "happy", "awesome"]
-    negative_words = ["hate", "bad", "terrible", "sad", "angry", "worst"]
+    positive_words = [
+        "love", "great", "excellent", "good", "happy", "awesome",
+        "amazing", "fantastic", "nice", "wonderful", "best",
+        "excited", "like", "enjoy", "brilliant", "positive"
+    ]
 
-    if any(word in sentence for word in positive_words):
+    negative_words = [
+        "hate", "bad", "terrible", "sad", "angry", "worst",
+        "awful", "horrible", "disappointed", "poor", "boring",
+        "upset", "negative", "annoying", "dislike", "pain"
+    ]
+
+    positive_score = sum(word in sentence for word in positive_words)
+    negative_score = sum(word in sentence for word in negative_words)
+
+    if positive_score > negative_score:
         return "happy"
-    elif any(word in sentence for word in negative_words):
+    elif negative_score > positive_score:
         return "sad"
     else:
         return "neutral"
