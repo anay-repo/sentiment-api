@@ -17,14 +17,20 @@ app.add_middleware(
 class SentimentRequest(BaseModel):
     sentences: List[str]
 
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+
+# Initialize the analyzer once outside the function for better performance
+analyzer = SentimentIntensityAnalyzer()
+
 def analyze_sentiment(sentence: str) -> str:
-    # TextBlob returns polarity between -1.0 (sad/negative) and 1.0 (happy/positive)
-    analysis = TextBlob(sentence)
+    # VADER returns a 'compound' score between -1 and 1
+    vs = analyzer.polarity_scores(sentence)
+    compound = vs['compound']
     
-    # We use a small threshold (0.1) to define "neutral"
-    if analysis.sentiment.polarity > 0.1:
+    # Using a very low threshold to capture subtle sentiments
+    if compound >= 0.05:
         return "happy"
-    elif analysis.sentiment.polarity < -0.1:
+    elif compound <= -0.05:
         return "sad"
     else:
         return "neutral"
@@ -39,3 +45,4 @@ def batch_sentiment(request: SentimentRequest):
             "sentiment": sentiment
         })
     return {"results": results}
+
