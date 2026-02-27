@@ -7,6 +7,10 @@ app = FastAPI()
 class SentimentRequest(BaseModel):
     sentences: List[str]
 
+@app.get("/")
+def root():
+    return {"message": "API is running"}
+
 def analyze_sentiment(sentence: str) -> str:
     sentence = sentence.lower()
 
@@ -19,10 +23,6 @@ def analyze_sentiment(sentence: str) -> str:
         return "sad"
     else:
         return "neutral"
-
-@app.get("/")
-def root():
-    return {"message": "API is running"}
 
 @app.post("/sentiment")
 def batch_sentiment(request: SentimentRequest):
